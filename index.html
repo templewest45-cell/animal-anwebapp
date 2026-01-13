@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>あーんしてポン！ - 動物さんにドーナツをあげよう</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <button id="settings-btn" aria-label="設定">⚙️</button>
+            <h1>あーんしてポン！</h1>
+            <p>動物さんにドーナツをあげてね！</p>
+        </header>
+
+        <main>
+            <div class="game-area">
+                <!-- Dynamic Animal Zone -->
+                <div class="animals-grid" id="animals-grid">
+                    <!-- Animals will be injected here via JS -->
+                </div>
+
+                <div class="food-tray">
+                    <div class="food-item" draggable="true" id="donut">
+                        <img src="donut.png" alt="ドーナツ" draggable="false">
+                    </div>
+                </div>
+            </div>
+
+            <div id="message-area" class="hidden">
+                <p>もぐもぐ...おいしい！</p>
+                <button id="reset-btn">もういちど</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>動物をえらんでね</h2>
+            <div id="animal-selection-list">
+                <!-- Checkboxes for animals -->
+            </div>
+            <div class="modal-actions">
+                <button id="save-settings">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
