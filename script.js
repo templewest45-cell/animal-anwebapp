@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Default Config
     let config = {
-        activeAnimals: ['bear'] 
+        activeAnimals: ['bear'],
+        isRandom: false
     };
 
     // Audio
@@ -40,18 +41,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderAnimals() {
         animalsGrid.innerHTML = '';
-        
+
         config.activeAnimals.forEach(key => {
             const animalData = animals[key];
             const div = document.createElement('div');
             div.classList.add('animal-container');
             div.dataset.animalKey = key;
-            
+
             const img = document.createElement('img');
             img.src = animalData.open;
             img.alt = animalData.name;
             img.draggable = false;
-            
+
             div.appendChild(img);
             animalsGrid.appendChild(div);
 
@@ -109,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Logic ---
     function feedAnimal(container, animalKey, donutElement) {
         if (donutElement.classList.contains('eaten')) return;
-        
+
         const animalData = animals[animalKey];
         const img = container.querySelector('img');
 
@@ -118,25 +119,25 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             animalAudio.volume = 0.6;
             animalAudio.play();
-        } catch(e) { console.log(e); }
-        
+        } catch (e) { console.log(e); }
+
         // Hide Donut
         donutElement.classList.add('eaten');
-        
+
         // Animation
         container.classList.add('eating-anim');
         setTimeout(() => {
             img.src = animalData.happy;
-            
+
             // Check Win Condition
             const remainingDonuts = document.querySelectorAll('.food-item:not(.eaten)');
             if (remainingDonuts.length === 0) {
-                 messageArea.classList.remove('hidden');
-                 try {
+                messageArea.classList.remove('hidden');
+                try {
                     audioWin.volume = 0.4;
                     audioWin.currentTime = 0;
                     audioWin.play();
-                } catch(e) {}
+                } catch (e) { }
             }
         }, 200);
     }
@@ -144,6 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Reset ---
     resetBtn.addEventListener('click', () => {
         messageArea.classList.add('hidden');
+        if (config.isRandom) {
+            applyRandomConfig();
+        }
         renderGame();
     });
 
@@ -161,50 +165,99 @@ document.addEventListener('DOMContentLoaded', () => {
     function openSettings() {
         settingsModal.classList.remove('hidden');
         animalSelectionList.innerHTML = '';
-        
+
+        const randomToggle = document.getElementById('random-mode-toggle');
+        randomToggle.checked = config.isRandom;
+
+        // Disable individual selection if random mode is on
+        updateSelectionListState(config.isRandom);
+
+        randomToggle.addEventListener('change', (e) => {
+            updateSelectionListState(e.target.checked);
+        });
+
         Object.keys(animals).forEach(key => {
             const animalData = animals[key];
             const label = document.createElement('label');
             label.classList.add('animal-option');
-            
+
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.value = key;
             checkbox.checked = config.activeAnimals.includes(key);
-            
+
             const thumb = document.createElement('img');
             thumb.src = animalData.open;
-            
+
             label.appendChild(checkbox);
             label.appendChild(thumb);
             label.appendChild(document.createTextNode(animalData.name));
-            
+
             animalSelectionList.appendChild(label);
         });
     }
 
-    function saveSettings() {
-        const checkboxes = animalSelectionList.querySelectorAll('input[type="checkbox"]');
-        const selected = [];
-        checkboxes.forEach(cb => {
-            if (cb.checked) selected.push(cb.value);
-        });
-        
-        if (selected.length === 0) {
-            selected.push('bear');
-            alert('ひとつは えらんでね！');
+    function updateSelectionListState(isRandom) {
+        if (isRandom) {
+            animalSelectionList.style.opacity = '0.5';
+            animalSelectionList.style.pointerEvents = 'none';
+        } else {
+            animalSelectionList.style.opacity = '1';
+            animalSelectionList.style.pointerEvents = 'auto';
         }
-        
-        config.activeAnimals = selected;
+    }
+
+    function saveSettings() {
+        const randomToggle = document.getElementById('random-mode-toggle');
+        config.isRandom = randomToggle.checked;
+
+        if (config.isRandom) {
+            applyRandomConfig();
+        } else {
+            const checkboxes = animalSelectionList.querySelectorAll('input[type="checkbox"]');
+            const selected = [];
+            checkboxes.forEach(cb => {
+                if (cb.checked) selected.push(cb.value);
+            });
+
+            if (selected.length === 0) {
+                selected.push('bear');
+                alert('ひとつは えらんでね！');
+            }
+            config.activeAnimals = selected;
+        }
+
         localStorage.setItem('animalAppConfig', JSON.stringify(config));
+    }
+
+    function applyRandomConfig() {
+        const animalKeys = Object.keys(animals);
+        // Random count between 1 and 5
+        const randomCount = Math.floor(Math.random() * 5) + 1;
+
+        // Fisher-Yates Shuffle for reliability
+        const shuffled = [...animalKeys];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+
+        config.activeAnimals = shuffled.slice(0, randomCount);
     }
 
     function loadConfig() {
         const saved = localStorage.getItem('animalAppConfig');
         if (saved) {
             try {
-                config = JSON.parse(saved);
-            } catch(e) {}
+                const loaded = JSON.parse(saved);
+                // Merge loaded config with defaults to handle new keys like isRandom
+                config = { ...config, ...loaded };
+            } catch (e) { }
+        }
+
+        // If random mode is on, generate initial random set
+        if (config.isRandom) {
+            applyRandomConfig();
         }
     }
 });
