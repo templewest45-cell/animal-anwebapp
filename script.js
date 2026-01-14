@@ -107,6 +107,61 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- Touch Support ---
+    let initialX, initialY;
+    let currentX, currentY;
+    let activeTouchDonut = null;
+
+    foodTray.addEventListener('touchstart', (e) => {
+        const item = e.target.closest('.food-item');
+        if (!item || item.classList.contains('eaten')) return;
+
+        // Prevent scrolling immediately
+        e.preventDefault();
+
+        activeTouchDonut = item;
+        const touch = e.touches[0];
+        initialX = touch.clientX;
+        initialY = touch.clientY;
+
+        item.style.opacity = '0.5';
+        item.style.transition = 'none';
+        item.style.zIndex = '1000';
+    }, { passive: false });
+
+    document.addEventListener('touchmove', (e) => {
+        if (!activeTouchDonut) return;
+
+        e.preventDefault(); // CRITICAL: Stop the scroll
+
+        const touch = e.touches[0];
+        currentX = touch.clientX - initialX;
+        currentY = touch.clientY - initialY;
+
+        activeTouchDonut.style.transform = `translate(${currentX}px, ${currentY}px) scale(1.1)`;
+    }, { passive: false });
+
+    document.addEventListener('touchend', (e) => {
+        if (!activeTouchDonut) return;
+
+        const touch = e.changedTouches[0];
+        const elementAtPoint = document.elementFromPoint(touch.clientX, touch.clientY);
+        const animalZone = elementAtPoint ? elementAtPoint.closest('.animal-container') : null;
+
+        if (animalZone) {
+            const key = animalZone.dataset.animalKey;
+            feedAnimal(animalZone, key, activeTouchDonut);
+        }
+
+        // Reset Styles
+        activeTouchDonut.style.opacity = '1';
+        activeTouchDonut.style.transition = 'transform 0.2s';
+        activeTouchDonut.style.transform = '';
+        activeTouchDonut.style.zIndex = '';
+
+        activeTouchDonut = null;
+    }, { passive: false });
+
     // --- Logic ---
     function feedAnimal(container, animalKey, donutElement) {
         if (donutElement.classList.contains('eaten')) return;
