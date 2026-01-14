@@ -145,6 +145,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!activeTouchDonut) return;
 
         const touch = e.changedTouches[0];
+
+        // Temporarily hide the donut from hit testing
+        activeTouchDonut.style.pointerEvents = 'none';
+
         const elementAtPoint = document.elementFromPoint(touch.clientX, touch.clientY);
         const animalZone = elementAtPoint ? elementAtPoint.closest('.animal-container') : null;
 
@@ -153,9 +157,10 @@ document.addEventListener('DOMContentLoaded', () => {
             feedAnimal(animalZone, key, activeTouchDonut);
         }
 
-        // Reset Styles
+        // Restore pointer events
+        activeTouchDonut.style.pointerEvents = 'auto';
         activeTouchDonut.style.opacity = '1';
-        activeTouchDonut.style.transition = 'transform 0.2s';
+        activeTouchDonut.style.transition = 'transform 0.3s ease'; // Smooth snap back
         activeTouchDonut.style.transform = '';
         activeTouchDonut.style.zIndex = '';
 
