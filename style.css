@@ -183,7 +183,7 @@ header p {
 
 /* Message Area */
 #message-area {
-    margin-top: 2rem;
+    margin-top: 1rem;
     animation: fadeIn 0.5s ease-out;
 }
 
