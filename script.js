@@ -20,7 +20,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Default Config
     let config = {
         activeAnimals: ['bear'],
-        isRandom: false
+        isRandom: false,
+        foodType: 'donut'
+    };
+
+    const foodTypes = {
+        donut: { name: 'ドーナツ', src: 'donut.png' },
+        onigiri: { name: 'おにぎり', src: 'onigiri.png' },
+        sandwich: { name: 'サンドイッチ', src: 'sandwich.png' }
     };
 
     // Audio
@@ -36,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Rendering ---
     function renderGame() {
         renderAnimals();
-        renderDonuts();
+        renderFood();
     }
 
     function renderAnimals() {
@@ -76,19 +83,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function renderDonuts() {
+    function renderFood() {
         foodTray.innerHTML = ''; // Clear tray
         const count = config.activeAnimals.length;
+        const currentFood = foodTypes[config.foodType] || foodTypes['donut'];
 
         for (let i = 0; i < count; i++) {
             const donutDiv = document.createElement('div');
             donutDiv.classList.add('food-item');
             donutDiv.draggable = true;
-            donutDiv.id = `donut-${i}`;
+            donutDiv.id = `food-${i}`;
 
             const img = document.createElement('img');
-            img.src = 'donut.png';
-            img.alt = 'ドーナツ';
+            img.src = currentFood.src;
+            img.alt = currentFood.name;
             img.draggable = false;
 
             donutDiv.appendChild(img);
@@ -104,6 +112,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => { donutDiv.style.opacity = '1'; }, 0);
                 draggedItem = null;
             });
+
+            // Touch handlers are bound globally, but we might need to re-bind if logic was specific
+            // Actually global handlers use .food-item class so it should work automatically for new elements
         }
     }
 
@@ -192,6 +203,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Check Win Condition
             const remainingDonuts = document.querySelectorAll('.food-item:not(.eaten)');
             if (remainingDonuts.length === 0) {
+                const count = config.activeAnimals.length;
+                messageArea.querySelector('p').textContent = `${count}こ あげました！`;
                 messageArea.classList.remove('hidden');
                 try {
                     audioWin.volume = 0.4;
@@ -228,6 +241,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const randomToggle = document.getElementById('random-mode-toggle');
         randomToggle.checked = config.isRandom;
+
+        // Food Selection
+        const foodRadios = document.querySelectorAll('input[name="food-choice"]');
+        foodRadios.forEach(radio => {
+            radio.checked = (radio.value === config.foodType);
+        });
 
         // Disable individual selection if random mode is on
         updateSelectionListState(config.isRandom);
@@ -270,6 +289,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function saveSettings() {
         const randomToggle = document.getElementById('random-mode-toggle');
         config.isRandom = randomToggle.checked;
+
+        // Food Selection
+        const selectedFood = document.querySelector('input[name="food-choice"]:checked');
+        if (selectedFood) {
+            config.foodType = selectedFood.value;
+        }
 
         if (config.isRandom) {
             applyRandomConfig();

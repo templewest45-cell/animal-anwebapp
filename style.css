@@ -248,6 +248,37 @@ header p {
     border-bottom: 1px solid #eee;
 }
 
+#food-selection-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.food-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.food-option img {
+    margin-top: 5px;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    border: 2px solid transparent;
+    border-radius: 5px;
+}
+
+.food-option input:checked+img {
+    border-color: var(--primary-color);
+    background-color: #f0f0f0;
+}
+
 #animal-selection-list {
     display: flex;
     flex-direction: column;
