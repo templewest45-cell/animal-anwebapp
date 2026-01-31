@@ -192,27 +192,39 @@ header p {
 }
 
 #message-area p {
-    font-size: 1.5rem;
+    font-size: 2.5rem;
+    /* Increased size */
     color: var(--primary-color);
     font-weight: bold;
+    margin: 0.5rem 0;
+    /* Adjust spacing */
 }
 
 #reset-btn {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 0.8rem 1.5rem;
-    font-size: 1.2rem;
+    background-color: transparent;
+    /* Transparent background */
+    color: #888;
+    /* Grey text */
+    border: 2px solid #ddd;
+    /* Subtle border */
+    padding: 0.5rem 1.2rem;
+    /* Smaller padding */
+    font-size: 1rem;
+    /* Smaller text */
     border-radius: 50px;
     cursor: pointer;
     font-family: inherit;
-    box-shadow: 0 5px 0 #e08e1a;
-    transition: transform 0.1s, box-shadow 0.1s;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+}
+
+#reset-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
 }
 
 #reset-btn:active {
-    transform: translateY(3px);
-    box-shadow: 0 2px 0 #e08e1a;
+    transform: translateY(2px);
 }
 
 /* Modal */
