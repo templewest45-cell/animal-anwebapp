@@ -314,7 +314,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             // Play Sound HERE
                             // Play Sound HERE
-                            playFanfare();
+                            try {
+                                playFanfare();
+                            } catch (e) { console.error(e); }
                         }, 500);
                     }
                 }, 600); // Slower speed for better counting feel
@@ -323,17 +325,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function speak(text) {
-        if (!window.speechSynthesis) return;
+        try {
+            if (!window.speechSynthesis) return;
 
-        // Cancel previous speech
-        window.speechSynthesis.cancel();
+            // Cancel previous speech
+            window.speechSynthesis.cancel();
 
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'ja-JP';
-        utterance.rate = 1.0;
-        utterance.pitch = 1.2; // Slightly higher pitch for cuteness
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'ja-JP';
+            utterance.rate = 1.0;
+            utterance.pitch = 1.2; // Slightly higher pitch for cuteness
 
-        window.speechSynthesis.speak(utterance);
+            window.speechSynthesis.speak(utterance);
+        } catch (e) { console.error("Speech error", e); }
     }
 
     // --- Reset ---
