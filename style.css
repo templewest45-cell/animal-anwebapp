@@ -227,6 +227,82 @@ header p {
     transform: translateY(2px);
 }
 
+/* Hanamaru & Result Styles */
+.feedback-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+#hanamaru-overlay {
+    position: absolute;
+    top: 50%;
+    right: -80px;
+    /* Position to the right of text */
+    left: auto;
+    transform: translateY(-50%) scale(0);
+    z-index: 500;
+    pointer-events: none;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#hanamaru-overlay.show {
+    transform: translateY(-50%) scale(1);
+    animation: pulse 2s infinite;
+}
+
+#hanamaru-overlay img {
+    width: 100px;
+    /* Smaller size */
+    height: 100px;
+    opacity: 1;
+}
+
+#result-food-container {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    min-height: 50px;
+}
+
+.result-food-icon {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    opacity: 0;
+    transform: scale(0);
+    cursor: pointer;
+    /* Clickable */
+    transition: transform 0.1s;
+}
+
+.result-food-icon:active {
+    transform: scale(0.9) !important;
+    /* Override animation scale */
+}
+
+@keyframes popIn {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
 /* Modal */
 .modal {
     position: fixed;

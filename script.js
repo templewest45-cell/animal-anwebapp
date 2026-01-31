@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const settingsModal = document.getElementById('settings-modal');
     const saveSettingsdBtn = document.getElementById('save-settings');
     const animalSelectionList = document.getElementById('animal-selection-list');
+    const hanamaruOverlay = document.getElementById('hanamaru-overlay');
+    const resultFoodContainer = document.getElementById('result-food-container');
 
     // Animal definitions
     const animals = {
@@ -30,8 +32,43 @@ document.addEventListener('DOMContentLoaded', () => {
         sandwich: { name: 'サンドイッチ', src: 'sandwich.png' }
     };
 
-    // Audio
-    const audioWin = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3');
+    // Audio Context
+    let audioCtx = null;
+
+    function initAudio() {
+        if (!audioCtx) {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContext();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    }
+
+    // Synthesized Fanfare (No external file dependency)
+    function playFanfare() {
+        if (!audioCtx) initAudio();
+
+        const now = audioCtx.currentTime;
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+
+        notes.forEach((freq, i) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.frequency.value = freq;
+            osc.type = 'triangle';
+
+            gain.gain.setValueAtTime(0.1, now + i * 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.5);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(now + i * 0.1);
+            osc.stop(now + i * 0.1 + 0.5);
+        });
+    }
 
     // Drag State
     let draggedItem = null;
@@ -39,6 +76,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Init ---
     loadConfig();
     renderGame();
+
+    // Audio Unlocker for Mobile/Strict Browsers
+    function unlockAudio() {
+        const events = ['click', 'touchstart', 'keydown'];
+        const unlock = () => {
+            console.log('Unlocking Audio...');
+            initAudio(); // Initialize Web Audio Context
+
+            // Remove listeners
+            events.forEach(e => document.removeEventListener(e, unlock));
+        };
+        events.forEach(e => document.addEventListener(e, unlock));
+    }
+    unlockAudio();
 
     // --- Rendering ---
     function renderGame() {
@@ -214,20 +265,84 @@ document.addEventListener('DOMContentLoaded', () => {
             const remainingDonuts = document.querySelectorAll('.food-item:not(.eaten)');
             if (remainingDonuts.length === 0) {
                 const count = config.activeAnimals.length;
-                messageArea.querySelector('p').textContent = `${count}こ あげました！`;
+                const currentFood = foodTypes[config.foodType] || foodTypes['donut'];
+
+                // Reset areas
+                resultFoodContainer.innerHTML = '';
+                messageArea.querySelector('p').textContent = '';
                 messageArea.classList.remove('hidden');
-                try {
-                    audioWin.volume = 0.4;
-                    audioWin.currentTime = 0;
-                    audioWin.play();
-                } catch (e) { }
+
+                // Hide Hanamaru initially
+                hanamaruOverlay.classList.remove('show');
+                hanamaruOverlay.classList.add('hidden');
+
+                // Number to Japanese mapping
+                const jpNumbers = ['ゼロ', 'いち', 'に', 'さん', 'よん', 'ご'];
+
+                // 3. Count Up Animation
+                let currentCount = 0;
+                const interval = setInterval(() => {
+                    currentCount++;
+
+                    // Add Icon
+                    const icon = document.createElement('img');
+                    icon.src = currentFood.src;
+                    icon.classList.add('result-food-icon');
+                    // Add click to speak
+                    const numText = jpNumbers[currentCount];
+                    icon.onclick = () => speak(numText);
+
+                    // Speak automatically
+                    speak(numText);
+
+                    resultFoodContainer.appendChild(icon);
+
+                    // Update Text
+                    messageArea.querySelector('p').textContent = `${currentCount}こ...`;
+
+                    if (currentCount >= count) {
+                        clearInterval(interval);
+
+                        // Final Sequence after a short delay
+                        setTimeout(() => {
+                            // Update Text & Show Hanamaru
+                            messageArea.querySelector('p').textContent = `${count}こ たべて 元気いっぱい！`;
+
+                            hanamaruOverlay.classList.remove('hidden');
+                            void hanamaruOverlay.offsetWidth;
+                            hanamaruOverlay.classList.add('show');
+
+                            // Play Sound HERE
+                            // Play Sound HERE
+                            playFanfare();
+                        }, 500);
+                    }
+                }, 600); // Slower speed for better counting feel
             }
         }, 200);
+    }
+
+    function speak(text) {
+        if (!window.speechSynthesis) return;
+
+        // Cancel previous speech
+        window.speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ja-JP';
+        utterance.rate = 1.0;
+        utterance.pitch = 1.2; // Slightly higher pitch for cuteness
+
+        window.speechSynthesis.speak(utterance);
     }
 
     // --- Reset ---
     resetBtn.addEventListener('click', () => {
         messageArea.classList.add('hidden');
+        hanamaruOverlay.classList.remove('show');
+        hanamaruOverlay.classList.add('hidden');
+        resultFoodContainer.innerHTML = '';
+
         if (config.isRandom) {
             applyRandomConfig();
         }
