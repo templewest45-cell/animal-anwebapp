@@ -308,15 +308,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         // Final Sequence after a short delay
                         setTimeout(() => {
-                            // Update Text & Show Hanamaru
+                            // Update Text
                             const p = messageArea.querySelector('p');
                             p.innerHTML = `<span class="big-number">${count}こ</span> <span class="small-message">あげたね！</span>`;
+
+                            // Position Hanamaru to the right of the last food icon
+                            const lastIcon = resultFoodContainer.lastElementChild;
+                            if (lastIcon) {
+                                resultFoodContainer.appendChild(hanamaruOverlay);
+                                // Position it centered on the right edge of the last icon
+                                const offset = 10; // slightly overlapping
+                                hanamaruOverlay.style.left = `${lastIcon.offsetLeft + lastIcon.offsetWidth - offset}px`;
+                                hanamaruOverlay.style.top = `${lastIcon.offsetTop}px`;
+                            }
 
                             hanamaruOverlay.classList.remove('hidden');
                             void hanamaruOverlay.offsetWidth;
                             hanamaruOverlay.classList.add('show');
-
-                            // Play Sound HERE
                             // Play Sound HERE
                             try {
                                 playFanfare();

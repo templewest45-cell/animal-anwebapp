@@ -242,27 +242,30 @@ header p {
 
 #hanamaru-overlay {
     position: absolute;
-    top: 50%;
-    right: -80px;
-    left: auto;
-    transform: translateY(-50%) scale(0);
+    /* Position will be set by JS */
+    transform: scale(0);
     z-index: 500;
     pointer-events: none;
     transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #hanamaru-overlay.show {
-    transform: translateY(-50%) scale(1);
+    transform: scale(1);
     animation: pulse 2s infinite;
 }
 
 #hanamaru-overlay img {
-    width: 100px;
-    height: 100px;
+    width: 50px;
+    height: 50px;
     opacity: 1;
 }
 
 #result-food-container {
+    position: relative;
+    /* For absolute positioning of Hanamaru */
     display: flex;
     justify-content: center;
     gap: 0.5rem;
@@ -294,15 +297,15 @@ header p {
 
 @keyframes pulse {
     0% {
-        transform: translate(-50%, -50%) scale(1);
+        transform: scale(1);
     }
 
     50% {
-        transform: translate(-50%, -50%) scale(1.05);
+        transform: scale(1.05);
     }
 
     100% {
-        transform: translate(-50%, -50%) scale(1);
+        transform: scale(1);
     }
 }
 
@@ -448,15 +451,13 @@ header p {
         margin-top: 0.2rem;
     }
 
-    #hanamaru-overlay {
-        right: -20px;
-        top: 60%;
+    #hanamaru-overlay img {
+        width: 30px;
+        /* Half size */
+        height: 30px;
     }
 
-    #hanamaru-overlay img {
-        width: 70px;
-        height: 70px;
-    }
+    /* Reset button styles if needed */
 
     .animal-container {
         width: 100px;
