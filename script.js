@@ -76,6 +76,10 @@ document.addEventListener('DOMContentLoaded', () => {
             div.addEventListener('drop', (e) => {
                 e.preventDefault();
                 div.classList.remove('drag-over');
+
+                // Prevent double feeding
+                if (div.classList.contains('fed')) return;
+
                 if (draggedItem && draggedItem.classList.contains('food-item')) {
                     feedAnimal(div, key, draggedItem);
                 }
@@ -164,8 +168,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const animalZone = elementAtPoint ? elementAtPoint.closest('.animal-container') : null;
 
         if (animalZone) {
-            const key = animalZone.dataset.animalKey;
-            feedAnimal(animalZone, key, activeTouchDonut);
+            // Prevent double feeding
+            if (!animalZone.classList.contains('fed')) {
+                const key = animalZone.dataset.animalKey;
+                feedAnimal(animalZone, key, activeTouchDonut);
+            }
         }
 
         // Restore pointer events
@@ -194,6 +201,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Hide Donut
         donutElement.classList.add('eaten');
+
+        // Create Fed State
+        container.classList.add('fed');
 
         // Animation
         container.classList.add('eating-anim');
