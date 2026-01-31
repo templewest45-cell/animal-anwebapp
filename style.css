@@ -12,10 +12,6 @@ body {
     padding: 0;
     width: 100%;
     height: 100%;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
     /* Allow scrolling if content overflows */
     overflow-y: auto;
     overflow-x: hidden;
@@ -40,21 +36,15 @@ body {
     max-width: 900px;
     width: 95%;
     max-height: 95vh;
-    /* Ensure it stays within screen */
     position: relative;
-    touch-action: none;
-    /* Prevent scroll on touch devices */
+    touch-action: auto;
+    /* Allow native scrolling */
     display: flex;
     flex-direction: column;
-    /* Ensure it stays within screen */
-    position: relative;
-    touch-action: none;
-    /* Prevent scroll on touch devices */
-    display: flex;
-    flex-direction: column;
-    /* Allow resizing */
     height: auto;
     min-height: 100%;
+    overflow-y: auto;
+    /* Allow scrolling inside the card if needed */
 }
 
 header {
@@ -171,7 +161,8 @@ header p {
     transition: transform 0.2s;
     user-select: none;
     z-index: 100;
-    /* Ensure draggable is on top */
+    touch-action: none;
+    /* Prevent scrolling while dragging this */
 }
 
 .food-item:active {
@@ -205,38 +196,28 @@ header p {
 
 #message-area p {
     font-size: 2.5rem;
-    /* Increased size */
     color: var(--primary-color);
     font-weight: bold;
     margin: 0.5rem 0;
-    /* Adjust spacing */
 }
 
 .big-number {
     font-size: 150%;
-    /* 1.5x larger relative to parent (which is already huge) */
     color: #e08e1a;
-    /* Slightly darker orange */
     vertical-align: middle;
 }
 
 .small-message {
     font-size: 50%;
-    /* Half size of parent (1.25rem) */
     vertical-align: middle;
 }
 
 #reset-btn {
     background-color: transparent;
-    /* Transparent background */
     color: #888;
-    /* Grey text */
     border: 2px solid #ddd;
-    /* Subtle border */
     padding: 0.5rem 1.2rem;
-    /* Smaller padding */
     font-size: 1rem;
-    /* Smaller text */
     border-radius: 50px;
     cursor: pointer;
     font-family: inherit;
@@ -263,7 +244,6 @@ header p {
     position: absolute;
     top: 50%;
     right: -80px;
-    /* Position to the right of text */
     left: auto;
     transform: translateY(-50%) scale(0);
     z-index: 500;
@@ -278,7 +258,6 @@ header p {
 
 #hanamaru-overlay img {
     width: 100px;
-    /* Smaller size */
     height: 100px;
     opacity: 1;
 }
@@ -299,13 +278,11 @@ header p {
     opacity: 0;
     transform: scale(0);
     cursor: pointer;
-    /* Clickable */
     transition: transform 0.1s;
 }
 
 .result-food-icon:active {
     transform: scale(0.9) !important;
-    /* Override animation scale */
 }
 
 @keyframes popIn {
@@ -435,4 +412,64 @@ header p {
     font-size: 1.1rem;
     border-radius: 10px;
     cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    .app-container {
+        padding: 1rem;
+        width: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+        height: 100%;
+    }
+
+    header {
+        margin-bottom: 1rem;
+    }
+
+    .game-area {
+        gap: 1rem;
+        flex: 1;
+        justify-content: space-evenly;
+    }
+
+    #message-area p {
+        font-size: 1.5rem;
+        margin: 0.2rem 0;
+    }
+
+    .big-number {
+        font-size: 140%;
+    }
+
+    .small-message {
+        font-size: 70%;
+        display: block;
+        margin-top: 0.2rem;
+    }
+
+    #hanamaru-overlay {
+        right: -20px;
+        top: 60%;
+    }
+
+    #hanamaru-overlay img {
+        width: 70px;
+        height: 70px;
+    }
+
+    .animal-container {
+        width: 100px;
+        height: 100px;
+    }
+
+    .food-tray {
+        min-height: 80px;
+        padding: 0.5rem;
+    }
+
+    .food-item {
+        width: 60px;
+        height: 60px;
+    }
 }
