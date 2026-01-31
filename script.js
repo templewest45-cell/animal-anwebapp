@@ -240,6 +240,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function feedAnimal(container, animalKey, donutElement) {
         if (donutElement.classList.contains('eaten')) return;
 
+        // Say "Mogu Mogu"
+        speak('もぐもぐ');
+
         const animalData = animals[animalKey];
         const img = container.querySelector('img');
 
@@ -306,7 +309,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Final Sequence after a short delay
                         setTimeout(() => {
                             // Update Text & Show Hanamaru
-                            messageArea.querySelector('p').textContent = `${count}こ たべて 元気いっぱい！`;
+                            const p = messageArea.querySelector('p');
+                            p.innerHTML = `<span class="big-number">${count}こ</span> <span class="small-message">たべて 元気いっぱい！</span>`;
 
                             hanamaruOverlay.classList.remove('hidden');
                             void hanamaruOverlay.offsetWidth;

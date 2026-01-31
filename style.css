@@ -212,6 +212,20 @@ header p {
     /* Adjust spacing */
 }
 
+.big-number {
+    font-size: 150%;
+    /* 1.5x larger relative to parent (which is already huge) */
+    color: #e08e1a;
+    /* Slightly darker orange */
+    vertical-align: middle;
+}
+
+.small-message {
+    font-size: 50%;
+    /* Half size of parent (1.25rem) */
+    vertical-align: middle;
+}
+
 #reset-btn {
     background-color: transparent;
     /* Transparent background */
