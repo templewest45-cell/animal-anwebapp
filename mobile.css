@@ -1,0 +1,62 @@
+@media (max-width: 600px) {
+    .app-container {
+        padding: 1rem;
+        width: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+        height: 100%;
+    }
+
+    header {
+        margin-bottom: 1rem;
+    }
+
+    .game-area {
+        gap: 1rem;
+        flex: 1;
+        /* Allow growing */
+        justify-content: space-evenly;
+    }
+
+    #message-area p {
+        font-size: 1.5rem;
+        /* Smaller on mobile */
+        margin: 0.2rem 0;
+    }
+
+    .big-number {
+        font-size: 140%;
+    }
+
+    .small-message {
+        font-size: 70%;
+        display: block;
+        /* Stack on mobile */
+        margin-top: 0.2rem;
+    }
+
+    #hanamaru-overlay {
+        right: -20px;
+        top: 60%;
+    }
+
+    #hanamaru-overlay img {
+        width: 70px;
+        height: 70px;
+    }
+
+    .animal-container {
+        width: 100px;
+        height: 100px;
+    }
+
+    .food-tray {
+        min-height: 80px;
+        padding: 0.5rem;
+    }
+
+    .food-item {
+        width: 60px;
+        height: 60px;
+    }
+}
