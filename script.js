@@ -310,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         setTimeout(() => {
                             // Update Text & Show Hanamaru
                             const p = messageArea.querySelector('p');
-                            p.innerHTML = `<span class="big-number">${count}こ</span> <span class="small-message">たべて 元気いっぱい！</span>`;
+                            p.innerHTML = `<span class="big-number">${count}こ</span> <span class="small-message">あげたね！</span>`;
 
                             hanamaruOverlay.classList.remove('hidden');
                             void hanamaruOverlay.offsetWidth;
